@@ -1,6 +1,10 @@
+/* Zarathustra (design typeface). Used if it is installed on the computer, or if a font file is
+   placed in assets/fonts/ under one of these names; otherwise Georgia is used. */
+@font-face{font-family:Zarathustra;font-display:swap;src:local('Zarathustra'),local('Zarathustra Regular'),local('Zarathustra-Regular'),url('./assets/fonts/Zarathustra.woff2') format('woff2'),url('./assets/fonts/Zarathustra.woff') format('woff'),url('./assets/fonts/Zarathustra.otf') format('opentype'),url('./assets/fonts/Zarathustra.ttf') format('truetype')}
+
 /* Hand onboarding overlay. Sits above the globe and card (z 5), below the live glove (z 6).
    Design rules: one hand on screen at a time, one line of text at a time. */
-.onboarding{position:fixed;inset:0;z-index:5;pointer-events:none;color:#fff;font-family:Roboto,Arial,Helvetica,sans-serif;--ink-shadow:0 2px 14px #0009,0 0 2px #0006;--headline:700 min(46px,4.2vw)/1.15 Roboto,Arial,Helvetica,sans-serif}
+.onboarding{position:fixed;inset:0;z-index:5;pointer-events:none;color:#fff;font-family:Zarathustra,Georgia,'Times New Roman',serif;--ink-shadow:0 2px 14px #0009,0 0 2px #0006;--headline:400 min(46px,4.2vw)/1.15 Zarathustra,Georgia,'Times New Roman',serif}
 .onboarding p,.onboarding h1{color:#fff}
 .onboarding[data-state=free]{display:none}
 
@@ -24,19 +28,29 @@
 :root:has(body.onboarding-on){background:#302e40}
 body.onboarding-on #stage{transition:transform 1.8s cubic-bezier(.22,.8,.2,1)}
 body[data-onboarding=intro] #stage{transition:none;transform:translateY(54vh) scale(1.08)} /* start in place; only the rise animates */
-@media (prefers-reduced-motion:reduce){body.onboarding-on #stage{transition:none}.ob-palm{animation:none!important}}
+@media (prefers-reduced-motion:reduce){body.onboarding-on #stage{transition:none}.ob-palm,.ob-grip img{animation:none!important}}
 
 /* ---------- 03 · Touch a home  /  04 · Pinch to visit ---------- */
 .ob-line{position:absolute;left:50%;bottom:6vh;transform:translate(-50%,8px);margin:0;white-space:nowrap;font:var(--headline);letter-spacing:-.4px;text-align:center;text-shadow:var(--ink-shadow);opacity:0;transition:opacity .35s ease,transform .35s ease;z-index:1}
 .ob-line:not(:empty){opacity:1;transform:translate(-50%,0)}
-.onboarding[data-state=touch]:not(.is-celebrating) .ob-line:not(:empty){transition-delay:.45s}
+.onboarding:is([data-state=grab],[data-state=touch]):not(.is-celebrating) .ob-line:not(:empty){transition-delay:.45s}
 .is-celebrating .ob-line{text-shadow:0 0 26px #c3ccffcc,var(--ink-shadow)}
 .onboarding[data-state=done] .ob-line{bottom:50%;font-size:min(56px,5vw);animation:ob-done-out 3.8s ease forwards}
 
 /* Scrim keeps the line readable over a bright globe. */
 .onboarding::after{content:"";position:absolute;left:0;right:0;bottom:0;height:34vh;background:linear-gradient(#0000,#000000a0 55%,#000c);opacity:0;transition:opacity .6s;pointer-events:none}
-.onboarding:is([data-state=welcome],[data-state=touch],[data-state=visit])::after{opacity:1}
+.onboarding:is([data-state=welcome],[data-state=grab],[data-state=touch],[data-state=visit])::after{opacity:1}
 .ob-welcome,.ob-ghost,.ob-target{z-index:1}
+
+/* Grab step: the fist illustration (the only hand on screen) sways as a demonstration,
+   and closes in / glows while the visitor actually grips; the thin bar fills as the earth turns. */
+.ob-grip{position:absolute;left:50%;bottom:calc(6vh + 82px);transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:14px;opacity:0;transition:opacity .35s ease;z-index:1}
+.onboarding[data-state=grab] .ob-grip{opacity:1;transition-delay:.45s}
+.ob-grip img{width:clamp(100px,9vw,140px);height:auto;filter:drop-shadow(0 8px 22px #0009);animation:ob-grip-demo 2.6s ease-in-out infinite;transition:transform .2s ease,filter .2s ease}
+.has-hand .ob-grip img{animation:none}
+.is-gripping .ob-grip img{transform:scale(.88);filter:drop-shadow(0 0 22px #c7d0ffdd) drop-shadow(0 8px 22px #0009)}
+.ob-grip-bar{width:min(200px,40vw);height:4px;border-radius:4px;background:#ffffff2e;overflow:hidden}
+.ob-grip-bar i{display:block;height:100%;background:linear-gradient(90deg,#c7d0ff,#fff);transform-origin:left;transform:scaleX(0);transition:transform .15s linear;box-shadow:0 0 10px #c7d0ff}
 
 /* Target highlight: one house at a time, so the eye knows where to go. */
 .ob-target{position:absolute;left:0;top:0;transform:translate(var(--x),var(--y));opacity:0;transition:opacity .3s}
@@ -65,6 +79,7 @@ body:is([data-onboarding=intro],[data-onboarding=welcome]) :is(.gesture-bar,.ges
 
 @keyframes ob-palm-idle{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-6px) rotate(3deg)}}
 @keyframes ob-palm-wave{0%,100%{transform:rotate(-16deg)}50%{transform:rotate(16deg)}}
+@keyframes ob-grip-demo{0%,100%{transform:translateX(-40px) rotate(-5deg)}50%{transform:translateX(40px) rotate(5deg)}}
 @keyframes ob-pulse{0%{transform:scale(.55);opacity:.95}100%{transform:scale(1.5);opacity:0}}
 @keyframes ob-reach{0%{transform:translate(var(--fx),var(--fy))}55%,100%{transform:translate(0,0)}}
 @keyframes ob-g-travel{0%,52%{opacity:1}56%,100%{opacity:0}}

@@ -28,3 +28,14 @@ assert.equal(combined.update({...s(.3),fist:false},250).confirm,true,'scheme one
 combined.update({...s(.2),fist:false},300);assert.equal(combined.update({...s(.2,.6),fist:false},400).mode,'point','pinch movement never drags in scheme one');assert.equal(combined.update({...s(.6,.6),fist:false},450).confirm,false);
 combined.update({...s(.1),fist:true},500);assert.equal(combined.update({...s(.1),fist:true},950).mode,'grab');assert.equal(combined.update({...s(.6),fist:false},1000).confirm,false,'fist release never clicks');
 console.log('Passed: fist drag + pinch-only click, no pinch drag, no release click after fist.');
+
+// Forgiving scheme-one click (first-attempt bug): slow pinch, small drift and a fist flicker still click.
+const kind=new FistPinch({...cfg,grabHoldMs:430,fistPinchClickMaxMs:1000,fistPinchMoveTolerance:.04});
+kind.update({...s(.6),fist:false},0);kind.update({...s(.2),fist:false},100);
+kind.update({...s(.15,.52),fist:true},400);
+assert.equal(kind.update({...s(.2,.525),fist:false},700).mode,'point','fist flicker during a pinch keeps the pinch');
+assert.equal(kind.update({...s(.6,.525),fist:false},850).confirm,true,'a 750 ms pinch with small drift still clicks in scheme one');
+kind.update({...s(.2),fist:false},900);assert.equal(kind.update({...s(.6),fist:false},2100).confirm,false,'a very long hold is still not a click');
+kind.update({...s(.6),fist:false},2200);kind.update({...s(.2),fist:false},2300);assert.equal(kind.update({...s(.6,.6),fist:false},2500).confirm,false,'a big move is still not a click');
+const strict=new PinchActions(cfg);strict.update(s(.7),0);strict.update(s(.2),100);assert.equal(strict.update(s(.6),850).confirm,false,'scheme two keeps the strict 450 ms window');
+console.log('Passed: forgiving scheme-one click (slow pinch, drift, fist flicker); scheme two unchanged.');

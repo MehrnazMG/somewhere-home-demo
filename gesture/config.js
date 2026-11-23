@@ -72,6 +72,9 @@ export const CONFIG = {
     pinchDragDistance: .018, // screen-fraction palm travel distinguishes a drag from a click
     pinchClickMinMs: 50,
     pinchClickMaxMs: 450, // a held pinch becomes a drag, not a release click
+    // Scheme 1 (fist drag + pinch click) only: pinch can't drag there, so the click is forgiving.
+    fistPinchClickMaxMs: 1000, // was 450 (shared). Slow first-time pinches were being cancelled.
+    fistPinchMoveTolerance: .04, // was .018 (shared). Palm drift while closing the fingers cancelled clicks.
     wiperStraightAngle: 135, // allow a naturally relaxed index during a flick
     wiperDownAngle: 20, // straight index swings away from its resting direction
     wiperReturnAngle: 9, // return near the original direction to confirm

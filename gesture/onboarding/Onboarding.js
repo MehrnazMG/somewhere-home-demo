@@ -11,7 +11,7 @@ const GLOVES = ['normal', 'hover', 'pinch', 'click'];
  * the bridge asks `allows()` before rotating, hovering or entering, and
  * `showsCursor` before drawing the live glove.
  */
-export function createOnboarding({ homes, projectHome, globeCenter, cameraStatus, startCamera, enabled = true }) {
+export function createOnboarding({ getScheme = () => 'fist', homes, projectHome, globeCenter, cameraStatus, startCamera, enabled = true }) {
   const flow = new OnboardingFlow();
   let mouseMode = false;
   let started = false; // the intro timer starts on the first rendered frame, not while the page is still loading
@@ -24,13 +24,14 @@ export function createOnboarding({ homes, projectHome, globeCenter, cameraStatus
       <div class="ob-wave-zone"><img class="ob-palm" src="./assets/onboarding/palm.png" alt="" draggable="false"><p class="ob-call" aria-live="polite"></p></div>
       <button class="ob-operator" type="button" hidden></button>
     </section>
+    <div class="ob-grip" aria-hidden="true"><img alt="" draggable="false"><span class="ob-grip-bar"><i></i></span></div>
     <div class="ob-target" aria-hidden="true"><i></i><i></i></div>
     <div class="ob-ghost" aria-hidden="true"><div class="ob-ghost-move">${GLOVES.map((g) => `<img data-g="${g}" src="./assets/cursor/${g}.png" alt="" draggable="false">`).join('')}<span class="ob-ghost-ripple"></span></div></div>
     <p class="ob-line" role="status" aria-live="polite"></p>`;
   document.body.appendChild(root);
   document.body.classList.add('onboarding-on');
   const $ = (s) => root.querySelector(s);
-  const el = { call: $('.ob-call'), line: $('.ob-line'), op: $('.ob-operator'), ghost: $('.ob-ghost'), target: $('.ob-target') };
+  const el = { gripImg: $('.ob-grip img'), gripBar: $('.ob-grip-bar i'), call: $('.ob-call'), line: $('.ob-line'), op: $('.ob-operator'), ghost: $('.ob-ghost'), target: $('.ob-target') };
   const card = document.getElementById('homeCard');
 
   el.op.addEventListener('click', () => { chime.unlock(); startCamera(); });
@@ -56,6 +57,12 @@ export function createOnboarding({ homes, projectHome, globeCenter, cameraStatus
   function lineFor(s) {
     const lost = s.lost && !mouseMode;
     switch (s.state) {
+      case 'grab': {
+        const lesson = COPY.grab[getScheme() === 'pinch' ? 'pinch' : 'fist'];
+        if (s.celebrating) return COPY.grab.success;
+        if (lost) return COPY.lost;
+        return s.hint ? lesson.hints[s.hint - 1] : lesson.title;
+      }
       case 'touch':
         if (s.celebrating) return COPY.touch.success;
         if (lost) return COPY.lost;
@@ -85,6 +92,14 @@ export function createOnboarding({ homes, projectHome, globeCenter, cameraStatus
     }
     set(el.line, lineFor(s));
 
+    // Grab step: the fist illustration is the only hand. It closes/glows while the visitor grips.
+    if (s.state === 'grab') {
+      const src = getScheme() === 'pinch' ? './assets/cursor/pinch.png' : './assets/onboarding/fist.png';
+      if (el.gripImg.getAttribute('src') !== src) el.gripImg.src = src;
+      el.gripBar.style.transform = `scaleX(${s.progress})`;
+    }
+    root.classList.toggle('is-gripping', !!s.gripping);
+
     // Demonstration ghost: only while no live hand is visible.
     let demo = '';
     target = s.state === 'touch' || s.state === 'visit' ? target : null;
@@ -113,8 +128,8 @@ export function createOnboarding({ homes, projectHome, globeCenter, cameraStatus
   const api = {
     get state() { return flow.state; },
     get active() { return flow.active; },
-    /** On the title and wave screens the palm illustration is the only hand. */
-    get showsCursor() { return flow.state !== 'intro' && flow.state !== 'welcome'; },
+    /** On the title, wave and grab screens the illustration is the only hand. */
+    get showsCursor() { return !['intro', 'welcome', 'grab'].includes(flow.state); },
     allows: (what) => flow.allows(what),
     update(now, input) {
       if (!started && flow.state === 'intro') { started = true; flow.reset(now); }

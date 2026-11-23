@@ -70,11 +70,12 @@ Every page load starts a short tutorial for the next visitor, following the team
 
 1. **Title** — “Let’s Share our Stories of Home” (Roboto 46 bold) with the earth half-visible at the bottom.
 2. **Wave** — after ~3 s the title fades and the earth rises smoothly to the centre; then “Wave your hand to begin” appears with the palm illustration. The palm starts waving as soon as the camera sees the visitor's hand. A side-to-side wave (or a steady raised hand for ~6 s) shows only “Hello”.
-3. **Use your index finger to touch a home** — one house is ringed; done when its card opens. The cursor is magnetic: near a house, the glove is pulled onto it and stays until the hand clearly moves away.
-4. **Pinch to visit** — pinch on the house or on its card; done when the room opens.
-5. **You’re ready to explore** — then free exploration.
+3. **Make a fist and grab to rotate the globe** (scheme 2: **Pinch and drag to rotate the globe**) — the fist illustration is the only hand on screen; it closes and glows while the visitor grips, and a thin bar fills as the earth turns.
+4. **Use your index finger to touch a home** — one house is ringed; done when its card opens. The cursor is magnetic: near a house, the glove is pulled onto it and stays until the hand clearly moves away.
+5. **Pinch to visit** — pinch on the house or on its card; done when the room opens.
+6. **You’re ready to explore** — then free exploration.
 
-Design rules: only **one hand** is on screen at a time (the live glove is hidden on the title and wave screens, and the looping ghost glove only demonstrates a step while no hand is in view), and only **one line of text** at a time (after ~9 s and ~18 s of trying, a more specific hint replaces the step's line; if the hand leaves the camera the line asks for it back). Success plays a short sound (browsers may need one click on the page first).
+Design rules: only **one hand** is on screen at a time (the live glove is hidden on the title, wave and grab screens, and the looping ghost glove only demonstrates a step while no hand is in view), and only **one line of text** at a time (after ~9 s and ~18 s of trying, a more specific hint replaces the step's line; if the hand leaves the camera the line asks for it back). Success plays a short sound (browsers may need one click on the page first).
 
 Operator keys: **T** restarts the tutorial for the next visitor, **N** skips the current step. Open the page with `?tutorial=off` to test without it. If camera permission was already granted, the camera starts by itself; otherwise click the welcome screen or press **C**. All tutorial wording is in `gesture/onboarding/copy.js`.
 
@@ -116,7 +117,7 @@ There are two illustrative room scenes:
 - **Blue room:** Ljubljana and several other markers. Some entries say “My home feels cold and empty.”
 - **Winter landscape + warm house:** Amsterdam, Taipei, Melbourne, Marrakesh, Mexico City and Valparaíso.
 
-These are demo scenes attached to sample place names, not verified submissions from those places. The card matches the selected scene. Room title/location/return controls choose light or dark colours from the background behind each component. The title uses a local Georgia fallback because the Figma Zarathustra font is not included.
+These are demo scenes attached to sample place names, not verified submissions from those places. The card matches the selected scene. Room title/location/return controls choose light or dark colours from the background behind each component. The title and onboarding text use the Zarathustra typeface if it is installed on the computer or saved as `assets/fonts/Zarathustra.woff2` (or `.woff`, `.otf`, `.ttf`); the font file is not included, so Georgia is used otherwise.
 
 ## Suggested test and feedback record
 

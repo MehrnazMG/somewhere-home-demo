@@ -7,6 +7,13 @@ export const COPY = {
     call: 'Wave your hand to begin',
     hello: 'Hello',
   },
+  grab: {
+    fist: { title: 'Make a fist and grab to rotate the globe',
+      hints: ['Close your hand into a fist and hold it for a moment', 'Keep the fist closed and move your hand slowly left or right'] },
+    pinch: { title: 'Pinch and drag to rotate the globe',
+      hints: ['Bring your thumb and index finger together and keep them closed', 'Keep the pinch closed and move your hand slowly left or right'] },
+    success: 'Well done',
+  },
   touch: {
     title: 'Use your index finger to touch a home',
     hints: ['Hold your finger over a glowing house', 'Turn the earth if no house is close, then hold over one'],

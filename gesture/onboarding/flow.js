@@ -2,16 +2,16 @@
  * Hand onboarding state machine (no DOM). Teaches one gesture at a time and
  * only advances after the visitor has actually performed it.
  *
- *   intro (title, half globe) ─timer─▶ welcome ─wave, Hello─▶ touch ─card shows─▶ visit (pinch house or card)
+ *   intro (title, half globe) ─timer─▶ welcome ─wave, Hello─▶ grab ─turn the earth─▶ touch ─card shows─▶ visit (pinch house or card)
  *      ▲                                                        │ room opens
  *      │ operator reset (T)                                      ▼
  *    free ◀──────────── done ◀──── back to globe ──────────── return
  *
  * Feed it one snapshot per display frame with update(now, input).
- * input = { present, x, y, mode: 'aim'|'navigate',
+ * input = { present, x, y, mode: 'aim'|'navigate', pan:{x,y},
  *           cardVisible, roomOpen, canReturn }
  */
-export const TEACHING_STEPS = ['touch', 'visit'];
+export const TEACHING_STEPS = ['grab', 'touch', 'visit'];
 
 export const ONBOARDING_DEFAULTS = {
   introFor: 3200,        // title-only opening before the earth rises and the wave prompt appears
@@ -19,6 +19,7 @@ export const ONBOARDING_DEFAULTS = {
   waveReversals: 2,      // left → right → left
   waveWindow: 1600,      // ms of history used to recognise a wave
   holdFallback: 6000,    // a raised, steady hand also begins after this long (for visitors who can't wave)
+  grabDistance: 0.22,    // total hand travel (screen fractions) while grabbing
   helloFor: 1600,        // how long Hello stays before the next step
   touchHold: 250,        // card must stay up this long to count as a touch
   celebrate: 1100,       // success moment before the next step
@@ -49,13 +50,14 @@ export class OnboardingFlow {
   allows(what) {
     switch (this.state) {
       case 'intro': case 'welcome': return false;
+      case 'grab': return what === 'rotate';
       default: return true;
     }
   }
 
   /** Operator: move on without the gesture (does not open rooms). */
   skip(now) {
-    const order = ['intro', 'welcome', 'touch', 'visit', 'return', 'done', 'free'];
+    const order = ['intro', 'welcome', 'grab', 'touch', 'visit', 'return', 'done', 'free'];
     let next = order[Math.min(order.indexOf(this.state) + 1, order.length - 1)];
     if (next === 'return') next = 'done'; // can't fake a room visit
     this._go(next, now);
@@ -110,7 +112,7 @@ export class OnboardingFlow {
     else { this.presentSince = null; this.absentSince ??= now; }
 
     // The room is the real goal: entering it from any teaching step counts.
-    if (input.roomOpen && ['intro', 'welcome', 'touch', 'visit'].includes(this.state)) {
+    if (input.roomOpen && ['intro', 'welcome', 'grab', 'touch', 'visit'].includes(this.state)) {
       this._go('return', now); this.events.push('success');
     } else if (this.state === 'return' && !input.roomOpen) {
       this._go('done', now); this.events.push('success');
@@ -126,8 +128,16 @@ export class OnboardingFlow {
           if (present) {
             this.samples.push({ t: now, x: input.x });
             while (this.samples.length && now - this.samples[0].t > this.o.waveWindow) this.samples.shift();
-            if (this._isWave() || now - this.presentSince >= this.o.holdFallback) this._succeed('touch', now, this.o.helloFor);
+            if (this._isWave() || now - this.presentSince >= this.o.holdFallback) this._succeed('grab', now, this.o.helloFor);
           } else this.samples = [];
+          break;
+        }
+        case 'grab': {
+          if (present && input.mode === 'navigate') {
+            const pan = input.pan || { x: 0, y: 0 };
+            this.progress = Math.min(1, this.progress + Math.hypot(pan.x, pan.y) / this.o.grabDistance);
+            if (this.progress >= 1) this._succeed('touch', now);
+          }
           break;
         }
         case 'touch': {
@@ -152,6 +162,7 @@ export class OnboardingFlow {
       hint: a >= this.o.hint2 ? 2 : a >= this.o.hint1 ? 1 : 0,
       lost: TEACHING_STEPS.includes(this.state) && !present && this.absentSince != null && now - this.absentSince >= this.o.lostAfter,
       present,
+      gripping: present && input.mode === 'navigate',
       needsCard: this.state === 'visit' && !input.cardVisible,
       canReturn: !!input.canReturn,
       step: TEACHING_STEPS.indexOf(this.state),
