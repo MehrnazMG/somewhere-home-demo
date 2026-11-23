@@ -84,6 +84,11 @@ export function createGestureBridge(view) {
   function mouseDown(e){mouseMove(e);mouse.down=true;}
   function mouseUp(){mouse.down=false;}
   window.addEventListener('pointermove',mouseMove,true);window.addEventListener('pointerdown',mouseDown,true);window.addEventListener('pointerup',mouseUp,true);window.addEventListener('pointercancel',mouseUp,true);
+  // Screen point the cursor aims at for a house: its middle, slightly above the geographic anchor.
+  function homePoint(home) {
+    home.getWorldPosition(projected);projected.project(view.camera);
+    return {x:(projected.x*.5+.5)*innerWidth,y:(-projected.y*.5+.5)*innerHeight-22};
+  }
   function targetAt(x, y) {
     view.world.updateMatrixWorld(true);view.camera.updateMatrixWorld(true);
     let best = null, distance = Infinity;
@@ -135,9 +140,15 @@ export function createGestureBridge(view) {
         if (view.isHomeOpen()) {
           if (backHit) { view.closeHome();cursor.click(); }
         } else if (cardHit&&onboarding.allows('enter')&&view.enterPreview()) {cursor.click(); }
+        else if (focused&&onboarding.allows('enter')) { view.setHover(focused);if(view.enterPreview())cursor.click(); }
       }
       onboarding.update(performance.now(),{present:true,x:f.pointer.x,y:f.pointer.y,mode:f.mode,pan:f.pan,...visitState()});
-      cursor.update({visible:true,x,y,mode:f.mode,locked:!!focused||cardHit||backHit,pinch:f.pinch,immediate:entering},dt);
+      // Magnetic cursor: once a house is chosen the glove is pulled onto it and stays there
+      // (focus is released only past CONFIG.focus.releaseFactor pick radii), so small hand tremor
+      // or the finger movement of a pinch doesn't slip off the house.
+      let cx=x, cy=y;
+      if (focused) { const h=homePoint(focused), k=CONFIG.focus.magnet; cx=x+(h.x-x)*k; cy=y+(h.y-y)*k; }
+      cursor.update({visible:onboarding.showsCursor,x:cx,y:cy,mode:f.mode,locked:!!focused||cardHit||backHit,pinch:f.pinch,immediate:entering},dt);
       status.textContent=hands.gestureMode==='pinch'
         ?f.mode==='navigate'?'Pinch held · move to turn':hands.pinchActions.phase==='pinch'?'Release to select · move to drag':instructions()
         :hands.clickGesture.phase==='pinch'?'Release to select':f.mode==='navigate'?'Holding the globe':focused?'Pinch and release to select':instructions();

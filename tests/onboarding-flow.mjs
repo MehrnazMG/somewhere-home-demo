@@ -32,14 +32,14 @@ function run(flow, from, to, input, step = 33) {
   assert.equal(s.state, 'welcome', 'still hand is not a wave');
   const wave = (t) => ({ present: true, x: .5 + .08 * Math.sin(t / 130) });
   s = run(f, 1533, 3000, wave);
-  assert.equal(f.next, 'grab'); assert.equal(s.celebrating, true);
+  assert.equal(f.next, 'touch'); assert.equal(s.celebrating, true);
   s = run(f, 3033, 4500, wave);
-  assert.equal(s.state, 'grab');
+  assert.equal(s.state, 'touch');
 }
 {
   const f = new OnboardingFlow(); f._go('welcome', 0);
-  const s = run(f, 0, 5000, { present: true, x: .5 });
-  assert.equal(f.next, 'grab', 'a steady raised hand eventually begins too');
+  const s = run(f, 0, 6500, { present: true, x: .5 });
+  assert.equal(f.next, 'touch', 'a steady raised hand eventually begins too');
   assert.equal(s.celebrating, true);
 }
 // Small jitter does not count as a wave.
@@ -47,20 +47,6 @@ function run(flow, from, to, input, step = 33) {
   const f = new OnboardingFlow(); f._go('welcome', 0);
   run(f, 0, 3000, (t) => ({ present: true, x: .5 + .01 * Math.sin(t / 60) }));
   assert.equal(f.celebrateUntil, 0);
-}
-
-// Grab: hover is blocked; only movement while grabbing fills progress.
-{
-  const f = new OnboardingFlow(); f._go('grab', 0);
-  assert.equal(f.allows('rotate'), true); assert.equal(f.allows('hover'), false); assert.equal(f.allows('enter'), false);
-  let s = run(f, 0, 1000, { present: true, mode: 'aim', pan: { x: .02, y: 0 } });
-  assert.equal(s.progress, 0, 'aiming movement is not grabbing');
-  s = run(f, 1033, 1400, { present: true, mode: 'navigate', pan: { x: .01, y: 0 } });
-  assert.ok(s.progress > 0 && s.progress < 1);
-  s = run(f, 1433, 2000, { present: true, mode: 'navigate', pan: { x: .01, y: 0 } });
-  assert.equal(s.celebrating, true);
-  s = run(f, 2033, 3500, { present: true });
-  assert.equal(s.state, 'touch');
 }
 
 // Touch: a card that flickers for a frame is not enough.
@@ -97,7 +83,7 @@ function run(flow, from, to, input, step = 33) {
 
 // Hand lost mid-lesson → prompt after a short delay; hints only grow while a hand is present.
 {
-  const f = new OnboardingFlow(); f._go('grab', 0);
+  const f = new OnboardingFlow(); f._go('touch', 0);
   let s = run(f, 0, 1000, {});
   assert.equal(s.lost, false);
   s = run(f, 1033, 1500, {});
@@ -115,8 +101,8 @@ function run(flow, from, to, input, step = 33) {
   const f = new OnboardingFlow();
   assert.equal(f.state, 'intro');
   f.skip(0); assert.equal(f.state, 'welcome');
-  f.skip(0); assert.equal(f.state, 'grab');
-  f.skip(0); f.skip(0); assert.equal(f.state, 'visit');
+  f.skip(0); assert.equal(f.state, 'touch');
+  f.skip(0); assert.equal(f.state, 'visit');
   f.skip(0); assert.equal(f.state, 'done', 'skip never fakes a room visit');
   f.reset(0); assert.equal(f.state, 'intro');
 }

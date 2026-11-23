@@ -38,8 +38,8 @@ export const CONFIG = {
     dwellMarker: 1.4, // seconds of holding to open a place
     dwellHome: 0.9, // seconds of holding on a home to read its story
     dwellReturn: 1.2, // seconds of holding on "back to the world"
-    magnet: 0.6, // how strongly the cursor (fingertip) is drawn toward a focused light (0–1)
-    releaseFactor: 1.6, // a pointed-at light stays chosen until the pointer is this many pick radii away
+    magnet: 0.6, // how strongly the glove is pulled onto a focused house (0 = none, 1 = snaps). Used by bridge.js.
+    releaseFactor: 2.0, // a chosen house stays chosen until the pointer is this many pick radii away (was 1.6; raised for the magnetic feel)
   },
 
   presence: {

@@ -78,7 +78,7 @@ const frame = intent.frame(); // consume once per display frame
 
 `frame()` consumes queued movement/events. Do not read it twice in the normal render loop or add a second source that also rotates the globe. The scheme-switch method deliberately flushes stale intentions.
 
-Both schemes ultimately produce `confirm` and navigation deltas. The bridge routes a confirmation onto the **card**, or onto an available return button. A house itself reveals a card; it must not bypass the card and enter directly. Mouse and hand interactions use the same visit flow.
+Both schemes ultimately produce `confirm` and navigation deltas. The bridge routes a confirmation onto the **card**, onto a focused **house** (by design request, Nov 2026: pinching the house itself opens it), or onto an available return button. With the mouse, a house click still only reveals its card.
 
 ## Preserve these tested behaviours
 
@@ -113,7 +113,7 @@ TrackingGate guards raw camera landmarks before screen clamping. Keep its stable
 
 ### Hand onboarding
 
-Shown at the start of every page load (one visitor session); `?tutorial=off` disables it for testing. Order: intro (title over a half-visible earth, 3.2 s from the first frame) → welcome (earth rises to centre; wave, or a steady raised hand for 4.5 s) → grab/pinch-drag the earth → touch a home (card stays up 250 ms) → pinch the card to visit → return → closing message → free use. Each step stays until the gesture succeeds. The bridge must ask `onboarding.allows('rotate'|'hover'|'enter')` before acting; the onboarding never rotates the globe or opens rooms itself. Hints escalate after 9 s and 18 s of *hand-present* time. Copy lives in `copy.js`; grab copy follows the selected scheme. The welcome screen lowers `#stage` with a CSS transform, so hover/picking is disabled there.
+Shown at the start of every page load (one visitor session); `?tutorial=off` disables it for testing. Order: intro (title over a half-visible earth, 3.2 s from the first frame) → welcome (earth rises to centre; the palm illustration waves once a hand is seen; a wave, or a steady raised hand for 6 s, shows “Hello” for 1.6 s) → touch a home with the index finger (card stays up 250 ms) → pinch the house or its card to visit → room → closing message → free use. Design rules: one hand on screen at a time (the live glove is hidden on the title/wave screens; ghost demos only appear while no hand is visible) and one line of text at a time (hints and the lost-hand warning replace the step line). Each step stays until the gesture succeeds. The bridge must ask `onboarding.allows('rotate'|'hover'|'enter')` before acting; the onboarding never rotates the globe or opens rooms itself. Hints escalate after 9 s and 18 s of *hand-present* time. Copy lives in `copy.js`. The cursor is magnetic: a focused house pulls the glove `CONFIG.focus.magnet` (0.6) of the way onto it, and focus holds until `releaseFactor` (raised 1.6 → 2.0) pick radii away. The cursor itself still follows the palm. The welcome screen lowers `#stage` with a CSS transform, so hover/picking is disabled there.
 
 ### Hover and room lifecycle
 
