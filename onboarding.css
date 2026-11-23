@@ -1,6 +1,5 @@
-/* Zarathustra (design typeface). Used if it is installed on the computer, or if a font file is
-   placed in assets/fonts/ under one of these names; otherwise Georgia is used. */
-@font-face{font-family:Zarathustra;font-display:swap;src:local('Zarathustra'),local('Zarathustra Regular'),local('Zarathustra-Regular'),url('./assets/fonts/Zarathustra.woff2') format('woff2'),url('./assets/fonts/Zarathustra.woff') format('woff'),url('./assets/fonts/Zarathustra.otf') format('opentype'),url('./assets/fonts/Zarathustra.ttf') format('truetype')}
+/* Zarathustra by Lorene Ceccon (SIL Open Font License 1.1, see assets/fonts/Zarathustra-OFL.txt). */
+@font-face{font-family:Zarathustra;font-display:swap;src:url('./assets/fonts/Zarathustra.otf') format('opentype'),local('Zarathustra')}
 
 /* Hand onboarding overlay. Sits above the globe and card (z 5), below the live glove (z 6).
    Design rules: one hand on screen at a time, one line of text at a time. */

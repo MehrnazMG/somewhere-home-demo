@@ -117,7 +117,7 @@ There are two illustrative room scenes:
 - **Blue room:** Ljubljana and several other markers. Some entries say “My home feels cold and empty.”
 - **Winter landscape + warm house:** Amsterdam, Taipei, Melbourne, Marrakesh, Mexico City and Valparaíso.
 
-These are demo scenes attached to sample place names, not verified submissions from those places. The card matches the selected scene. Room title/location/return controls choose light or dark colours from the background behind each component. The title and onboarding text use the Zarathustra typeface if it is installed on the computer or saved as `assets/fonts/Zarathustra.woff2` (or `.woff`, `.otf`, `.ttf`); the font file is not included, so Georgia is used otherwise.
+These are demo scenes attached to sample place names, not verified submissions from those places. The card matches the selected scene. Room title/location/return controls choose light or dark colours from the background behind each component. The title and onboarding text use the Zarathustra typeface; the font (Lorene Ceccon, SIL Open Font License) is included as `assets/fonts/Zarathustra.otf` with its licence; Georgia is only a loading fallback.
 
 ## Suggested test and feedback record
 
