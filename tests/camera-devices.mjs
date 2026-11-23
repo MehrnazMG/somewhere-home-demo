@@ -1,0 +1,12 @@
+import assert from 'node:assert/strict';
+import {readFile} from 'node:fs/promises';
+const src=await readFile(new URL('../gesture/camera-devices.js',import.meta.url),'utf8');
+const {cameraVideoConstraints,cameraChoices}=await import('data:text/javascript;base64,'+Buffer.from(src).toString('base64'));
+const choices=cameraChoices([{kind:'audioinput',deviceId:'mic',label:'Mic'},{kind:'videoinput',deviceId:'internal',label:'Built-in Camera'},{kind:'videoinput',deviceId:'external',label:'360 Camera'}],'external');
+assert.equal(choices.value,'external');assert.equal(choices.options.length,3);assert.equal(choices.options[2].label,'360 Camera');
+assert.equal(cameraChoices([],'disconnected').value,'');
+assert.match(cameraChoices([{kind:'videoinput',deviceId:'private',label:''}]).options[1].label,/Camera 1/);
+assert.deepEqual(cameraVideoConstraints('external').deviceId,{exact:'external'});
+assert.equal(cameraVideoConstraints('external').facingMode,undefined,'external device must not be filtered as a front camera');
+assert.equal(cameraVideoConstraints().facingMode,'user');
+console.log('Passed: video-only choices, readable names, disconnected fallback and exact external-camera selection.');

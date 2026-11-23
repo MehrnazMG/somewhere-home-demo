@@ -1,0 +1,126 @@
+/* Hand onboarding overlay. Sits above the globe and card (z 5), below the live glove (z 6). */
+.onboarding{position:fixed;inset:0;z-index:5;pointer-events:none;color:#fff;font-family:Roboto,Arial,Helvetica,sans-serif;--ink-shadow:0 2px 14px #0009,0 0 2px #0006}
+.onboarding p{color:#fff}
+.onboarding>*{transition:opacity .45s ease,transform .45s ease}
+.onboarding[data-state=free]{display:none}
+
+/* ---------- 01 · Welcome ----------
+   intro:   title only, the earth half-visible at the bottom
+   welcome: the earth rises to the centre; "Wave your hand to begin" + waving palm */
+.ob-welcome{position:absolute;inset:0;opacity:0;visibility:hidden;cursor:default;text-align:center}
+.onboarding:is([data-state=intro],[data-state=welcome]) .ob-welcome{opacity:1;visibility:visible;pointer-events:auto}
+.ob-welcome::before{content:"";position:absolute;inset:0;background:linear-gradient(#000 0%,#000 50%,#000b 60%,#0000 80%);opacity:0;transition:opacity 1.4s ease}
+.onboarding[data-state=intro] .ob-welcome::before{opacity:1}
+.ob-headline{position:absolute;left:50%;top:30vh;transform:translate(-50%,-50%);width:min(92vw,1100px);margin:0;font:700 46px/1.15 Roboto,Arial,Helvetica,sans-serif;letter-spacing:-.4px;color:#fff;text-shadow:var(--ink-shadow);transition:opacity .7s ease,transform .9s ease}
+.onboarding[data-state=welcome] .ob-headline{opacity:0;transform:translate(-50%,-90%)}
+.ob-wave-zone{position:absolute;left:50%;bottom:9vh;transform:translate(-50%,24px);display:flex;flex-direction:column;align-items:center;opacity:0;transition:opacity .7s ease .9s,transform .8s ease .9s}
+.onboarding[data-state=welcome] .ob-wave-zone{opacity:1;transform:translate(-50%,0)}
+.ob-palm{width:clamp(96px,10vw,140px);height:auto;transform-origin:50% 92%;animation:ob-palm-wave 1.5s ease-in-out infinite;filter:drop-shadow(0 6px 18px #0009)}
+.has-hand .ob-palm{animation-duration:.9s}
+.ob-call{margin:14px 0 0;font:700 46px/1.15 Roboto,Arial,Helvetica,sans-serif;letter-spacing:-.4px;color:#fff;text-shadow:var(--ink-shadow);transition:opacity .3s}
+.ob-seen{position:absolute;left:0;right:0;bottom:4vh;margin:0;font:500 18px/1.4 Roboto,Arial,sans-serif;color:#e9e4ff;min-height:1.4em;text-shadow:var(--ink-shadow)}
+.onboarding[data-state=welcome].is-celebrating .ob-call{opacity:.35}
+.onboarding[data-state=welcome].is-celebrating .ob-seen{font-size:26px;font-weight:700}
+.onboarding[data-state=welcome]::after{opacity:1}
+.ob-operator{position:absolute;bottom:1.6vh;left:50%;transform:translateX(-50%);font:12px Roboto,Arial,sans-serif;color:#cfc9e6;background:#1b1928cc;border:1px solid #ffffff2a;border-radius:99px;padding:7px 14px;pointer-events:auto}
+.onboarding[data-state=welcome] .ob-operator{bottom:auto;top:2.4vh}
+
+/* The earth waits half-hidden at the bottom, then rises to the centre. */
+body.onboarding-on #stage{transition:transform 1.8s cubic-bezier(.22,.8,.2,1)}
+body[data-onboarding=intro] #stage{transition:none} /* start in place; only the rise animates */
+body[data-onboarding=intro] #stage{transform:translateY(54vh) scale(1.08)}
+@media (prefers-reduced-motion:reduce){body.onboarding-on #stage{transition:none}.ob-palm,.ob-illus{animation:none!important}}
+
+/* ---------- 02 · Teaching steps ---------- */
+.ob-top{position:absolute;top:4.2vh;left:0;right:0;margin:0;text-align:center;font-size:clamp(15px,1.25vw,20px);color:#fff;text-shadow:var(--ink-shadow);opacity:0;display:flex;flex-direction:column;align-items:center;gap:10px}
+.ob-dots{display:flex;gap:7px}.ob-dots i{width:6px;height:6px;border-radius:50%;background:#ffffff40;transition:background .3s,transform .3s}
+.ob-dots i.is-now{background:#fff;transform:scale(1.35)}.ob-dots i.is-done{background:#b9c7ff}
+.onboarding:is([data-state=grab],[data-state=touch],[data-state=visit]) .ob-top{opacity:1}
+
+.ob-caption{position:absolute;left:50%;bottom:6vh;transform:translate(-50%,8px);width:min(92vw,900px);text-align:center;opacity:0}
+.onboarding:is([data-state=grab],[data-state=touch],[data-state=visit]) .ob-caption{opacity:1;transform:translate(-50%,0)}
+.ob-title{margin:0;display:flex;flex-direction:column;font-size:46px;font-weight:700;line-height:1.12;letter-spacing:-.4px;text-shadow:var(--ink-shadow);transition:opacity .3s}
+.ob-key{font-size:1em}
+.ob-illus{display:block;margin:0 auto 12px;width:clamp(90px,9vw,128px);height:auto;filter:drop-shadow(0 6px 18px #0009);animation:ob-fist-drag 2.6s ease-in-out infinite}
+.ob-illus[hidden]{display:none}
+.is-celebrating .ob-illus{animation-play-state:paused;opacity:.4}
+.ob-success{position:absolute;left:0;right:0;top:50%;margin:0;transform:translateY(-50%) scale(.96);font-size:40px;font-weight:700;letter-spacing:-.4px;opacity:0;text-shadow:0 0 24px #b9c7ffaa,var(--ink-shadow);transition:opacity .3s,transform .4s cubic-bezier(.3,1.6,.5,1)}
+.is-celebrating .ob-title{opacity:0}
+.is-celebrating .ob-success{opacity:1;transform:translateY(-50%) scale(1)}
+.ob-progress{width:min(220px,50vw);height:4px;margin:18px auto 0;border-radius:4px;background:#ffffff2e;overflow:hidden}
+.ob-progress span{display:block;height:100%;background:linear-gradient(90deg,#c7d0ff,#fff);transform-origin:left;transform:scaleX(0);transition:transform .15s linear;box-shadow:0 0 10px #c7d0ff}
+.ob-hint{margin:14px auto 0;max-width:520px;min-height:1.5em;font:400 18px/1.45 Roboto,Arial,Helvetica,sans-serif;color:#eef0ff;text-shadow:var(--ink-shadow)}
+.ob-hint:empty{opacity:0}
+
+/* Hand out of view: the hint line asks for the hand back (the demo keeps looping). */
+.is-lost .ob-hint{color:#ffe1b8}
+.is-lost .ob-hint::before{content:"";display:inline-block;width:8px;height:8px;margin-right:9px;border-radius:50%;background:#ffc98a;box-shadow:0 0 8px #ffc98a;vertical-align:1px;animation:ob-blink 1.6s ease-in-out infinite}
+
+/* Scrims keep the words readable over a bright globe, like the dark top/bottom bands in the wireframe. */
+.onboarding::before,.onboarding::after{content:"";position:absolute;left:0;right:0;opacity:0;transition:opacity .6s;pointer-events:none}
+.onboarding::before{top:0;height:17vh;background:linear-gradient(#000a,#0000)}
+.onboarding::after{bottom:0;height:36vh;background:linear-gradient(#0000,#000000a8 55%,#000c)}
+.onboarding:is([data-state=grab],[data-state=touch],[data-state=visit])::before,.onboarding:is([data-state=grab],[data-state=touch],[data-state=visit])::after{opacity:1}
+.ob-welcome,.ob-caption,.ob-top,.ob-ghost,.ob-target{z-index:1}
+
+/* Target highlight: one house at a time, so the eye knows where to go. */
+.ob-target{position:absolute;left:0;top:0;transform:translate(var(--x),var(--y));opacity:0;transition:opacity .3s}
+.show-target .ob-target{opacity:1}
+.ob-target i{position:absolute;left:-30px;top:-30px;width:60px;height:60px;border-radius:50%;border:2px solid #fff;border-width:2.5px;box-shadow:0 0 0 1px #2b2a5566,0 0 16px #dfe4ff,inset 0 0 10px #cfd7ff99;animation:ob-pulse 1.8s ease-out infinite}
+.ob-target i+i{animation-delay:.9s}
+
+/* Ghost hand: a neutral, looping demonstration shown beside its target. */
+.ob-ghost{position:absolute;left:0;top:0;transform:translate(var(--x),var(--y));opacity:0;transition:opacity .4s;--gh:clamp(96px,11vh,150px)}
+.ob-ghost:not([data-demo=""]){opacity:.78}
+.ob-ghost-move{position:absolute;left:0;top:0}
+.ob-ghost img{position:absolute;left:0;top:0;height:var(--gh);width:auto;transform:translate(-58%,-60%);opacity:0;filter:drop-shadow(0 0 16px #b8c4ffcc) saturate(.8)}
+.ob-ghost-ripple{position:absolute;left:-26px;top:-26px;width:52px;height:52px;border-radius:50%;border:2px solid #fff;opacity:0}
+.ob-ghost[data-demo=grab] .ob-ghost-move,.ob-ghost[data-demo=pinch-drag] .ob-ghost-move{animation:ob-drag 3.2s ease-in-out infinite}
+.ob-ghost[data-demo=grab] img[data-g=normal]{animation:ob-g-open 3.2s infinite}
+.ob-ghost[data-demo=grab] img[data-g=grab]{animation:ob-g-hold 3.2s infinite}
+.ob-ghost[data-demo=pinch-drag] img[data-g=hover]{animation:ob-g-open 3.2s infinite}
+.ob-ghost[data-demo=pinch-drag] img[data-g=pinch]{animation:ob-g-hold 3.2s infinite}
+.ob-ghost[data-demo=touch] .ob-ghost-move{animation:ob-reach 3s cubic-bezier(.4,0,.2,1) infinite}
+.ob-ghost[data-demo=touch] img[data-g=normal]{animation:ob-g-travel 3s infinite}
+.ob-ghost[data-demo=touch] img[data-g=hover]{animation:ob-g-arrive 3s infinite}
+.ob-ghost[data-demo=visit] img[data-g=hover]{animation:ob-g-v-hover 2.8s infinite}
+.ob-ghost[data-demo=visit] img[data-g=pinch]{animation:ob-g-v-pinch 2.8s infinite}
+.ob-ghost[data-demo=visit] img[data-g=click]{animation:ob-g-v-click 2.8s infinite}
+.ob-ghost[data-demo=visit] .ob-ghost-ripple{animation:ob-ripple 2.8s infinite}
+
+/* In the room: a quiet reminder above the return button once it can be used. */
+.ob-return{position:absolute;left:50%;bottom:calc(7% + 86px);transform:translate(-50%,6px);margin:0;width:max-content;max-width:90vw;padding:8px 16px;border-radius:30px;background:#0007;backdrop-filter:blur(6px);text-align:center;font:clamp(14px,1.1vw,18px)/1.4 Arial,sans-serif;text-shadow:var(--ink-shadow);opacity:0}
+.can-return .ob-return{opacity:1;transform:translate(-50%,0);transition-delay:.6s}
+
+.ob-done{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;opacity:0;background:radial-gradient(circle at center,#0007,#0000 60%)}
+.ob-done p{margin:0;color:#fff;text-shadow:var(--ink-shadow)}
+.ob-done p:first-child{font-size:56px;font-weight:700;letter-spacing:-.6px}
+.ob-done p+p{margin-top:12px;font-size:clamp(18px,1.6vw,26px)}
+.onboarding[data-state=done] .ob-done{opacity:1;animation:ob-done-out 3.8s ease forwards}
+
+/* Testing controls stay reachable but recede while a visitor is being taught. */
+body.onboarding-on .gesture-bar,body.onboarding-on .gesture-mode-bar{opacity:.28;transition:opacity .3s}
+body.onboarding-on .gesture-bar:hover,body.onboarding-on .gesture-mode-bar:hover,body.onboarding-on .gesture-mode-bar:focus-within{opacity:1}
+body:is([data-onboarding=intro],[data-onboarding=welcome]) :is(.gesture-bar,.gesture-mode-bar){z-index:8}
+
+@keyframes ob-palm-wave{0%,100%{transform:rotate(-14deg)}50%{transform:rotate(14deg)}}
+@keyframes ob-fist-drag{0%,100%{transform:translateX(-36px) rotate(-4deg)}50%{transform:translateX(36px) rotate(4deg)}}
+@keyframes ob-pulse{0%{transform:scale(.55);opacity:.95}100%{transform:scale(1.5);opacity:0}}
+@keyframes ob-drag{0%,22%{transform:translate(-70px,0)}72%,100%{transform:translate(70px,-6px)}}
+@keyframes ob-g-open{0%,18%{opacity:1}20%,74%{opacity:0}76%,88%{opacity:1}100%{opacity:0}}
+@keyframes ob-g-hold{0%,18%{opacity:0}20%,74%{opacity:1}76%,100%{opacity:0}}
+@keyframes ob-reach{0%{transform:translate(var(--fx),var(--fy))}55%,100%{transform:translate(0,0)}}
+@keyframes ob-g-travel{0%,52%{opacity:1}56%,100%{opacity:0}}
+@keyframes ob-g-arrive{0%,52%{opacity:0}56%,90%{opacity:1}100%{opacity:0}}
+@keyframes ob-g-v-hover{0%,28%{opacity:1}30%,62%{opacity:0}64%,92%{opacity:1}100%{opacity:0}}
+@keyframes ob-g-v-pinch{0%,28%{opacity:0}30%,46%{opacity:1}48%,100%{opacity:0}}
+@keyframes ob-g-v-click{0%,46%{opacity:0}48%,62%{opacity:1}64%,100%{opacity:0}}
+@keyframes ob-ripple{0%,48%{opacity:0;transform:scale(.4)}50%{opacity:1;transform:scale(.4)}70%,100%{opacity:0;transform:scale(1.7)}}
+@keyframes ob-blink{50%{opacity:.35}}
+@keyframes ob-done-out{0%{opacity:0}12%,78%{opacity:1}100%{opacity:0}}
+@media (prefers-reduced-motion:reduce){.ob-ghost-move,.ob-target i{animation:none!important}}
+
+/* Mouse stand-in tip (only while no camera is running). */
+.ob-mouse{position:absolute;right:22px;top:20px;margin:0;padding:8px 14px;border-radius:30px;background:#1b1928d9;border:1px solid #ffffff2e;font:13px/1.3 Roboto,Arial,sans-serif;color:#e8e6ff;opacity:0;transition:opacity .3s;z-index:2}
+.is-mouse .ob-mouse:not(:empty){opacity:1}
+.onboarding[data-state=free] .ob-mouse{display:none}

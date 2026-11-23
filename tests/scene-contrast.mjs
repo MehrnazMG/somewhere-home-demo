@@ -1,0 +1,12 @@
+import assert from 'node:assert/strict';
+import {readFile} from 'node:fs/promises';
+const load=async file=>import('data:text/javascript;base64,'+Buffer.from(await readFile(new URL('../'+file,import.meta.url),'utf8')).toString('base64'));
+const {chooseInk,luminance}=await load('scene-contrast.js');
+assert.equal(chooseInk(Array(30).fill(luminance(245,220,211))),'dark','bright winter sky needs dark text');
+assert.equal(chooseInk(Array(30).fill(luminance(20,37,53))),'light','dark room needs white text');
+assert.equal(chooseInk([]),'light');
+const {describeHome}=await load('home-scenes.js');
+assert.equal(describeHome({userData:{name:'Ljubljana, Slovenia'}}).scene,'blue','keep original blue room');
+assert.equal(describeHome({userData:{name:'Amsterdam, Netherlands'}}).scene,'winter','nearby marker offers second room');
+assert.equal(describeHome({userData:{name:'Cape Town, South Africa'}}).scene,'blue');
+console.log('Passed: bright/dark adaptive ink and coexistence of blue/winter home data.');

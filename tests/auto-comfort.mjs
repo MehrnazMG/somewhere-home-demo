@@ -1,0 +1,14 @@
+import assert from 'node:assert/strict';
+import {readFile} from 'node:fs/promises';
+const src=await readFile(new URL('../gesture/input/AutoComfort.js',import.meta.url),'utf8');
+const {AutoComfort}=await import('data:text/javascript;base64,'+Buffer.from(src).toString('base64'));
+const cfg={autoComfortMs:1500,autoComfortGapMs:140,autoComfortRadius:.025};
+const auto=new AutoComfort(cfg);
+for(let t=0;t<1500;t+=33) assert.equal(auto.update({x:.7+Math.sin(t)*.002,y:.65},t,true),null);
+auto.update({x:.7,y:.65},1520,true);assert.ok(auto.anchor);
+const locked={...auto.anchor};auto.update({x:.1,y:.2},1600,false);assert.deepEqual(auto.anchor,locked,'later motion never rec enters');
+auto.interrupt();assert.deepEqual(auto.anchor,locked,'brief hand loss keeps session center');
+auto.reset();for(let t=0;t<3000;t+=33)auto.update({x:t/3000,y:.6},t,true);assert.equal(auto.anchor,null,'moving hand must not calibrate');
+auto.reset();auto.update({x:.5,y:.6},0,true);auto.update({x:.5,y:.6},100,true);auto.update({x:.5,y:.6},200,false);assert.equal(auto.samples.length,0,'grabbing/clicking interrupts observation');
+auto.update({x:.5,y:.6},300,true);auto.update({x:.5,y:.6},600,true);assert.equal(auto.samples[0].time,600,'tracking gaps restart observation');
+console.log('Passed: stable one-time calibration, no ongoing recentering, movement/gesture rejection, loss and new-session reset.');
