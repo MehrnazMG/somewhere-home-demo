@@ -71,7 +71,7 @@ Every page load starts a short tutorial for the next visitor, following the team
 1. **Title** — “Let’s Share our Stories of Home” (Zarathustra, 46 px) with the earth half-visible at the bottom.
 2. **Wave** — after ~3 s the title fades and the earth rises smoothly to the centre; then “Wave your hand to begin” appears with the palm illustration. The palm starts waving as soon as the camera sees the visitor's hand. A side-to-side wave (or a steady raised hand for ~6 s) shows only “Hello”.
 3. **Make a fist and grab to rotate the globe** (scheme 2: **Pinch and drag to rotate the globe**) — the fist illustration is the only hand on screen; it closes and glows while the visitor grips, and a thin bar fills as the earth turns.
-4. **Use your index finger to touch a home** — one house is ringed; done when its card opens. The cursor is magnetic: near a house, the glove is pulled onto it and stays until the hand clearly moves away.
+4. **Move your hand to touch a home** — one house is ringed; done when its card opens. The cursor is magnetic: near a house, the glove is pulled onto it and stays until the hand clearly moves away.
 5. **Pinch to visit** — pinch on the house or on its card; done when the room opens.
 6. **You’re ready to explore** — then free exploration.
 
