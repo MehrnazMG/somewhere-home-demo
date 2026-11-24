@@ -24,14 +24,10 @@ const STATES = {
 };
 const IMAGE_H = 220;
 
-// Small effects, drawn around the hotspot (in px at 1080p; scaled with the glove).
-const SPARKS = `
-  <line x1="-44" y1="-18" x2="-28" y2="-10"/>
-  <line x1="-30" y1="-44" x2="-20" y2="-28"/>
-  <line x1="-4" y1="-50" x2="-4" y2="-32"/>`;
+// Click ripple, drawn around the hotspot (in px at 1080p; scaled with the glove).
+// (The decorative spark lines beside the glove were removed by design request, Nov 2026.)
 const EFFECTS = `
   <svg class="glove__fx" viewBox="-80 -80 160 160" aria-hidden="true">
-    <g class="fx fx--sparks">${SPARKS}</g>
     <g class="fx fx--ripple">
       <circle r="16"/><circle r="28"/>
     </g>

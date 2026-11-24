@@ -55,13 +55,20 @@
 }
 .glove[data-state='hover'] .glove__img.is-active {
   transform: scale(1.06);
-  filter: drop-shadow(0 0 14px var(--glove-glow)) drop-shadow(0 10px 18px rgba(0, 0, 0, 0.4));
 }
 .glove[data-state='click'] .glove__img.is-active {
   transform: scale(0.96);
 }
+/* Active states (hovering a home, pinching, choosing, grabbing) lift off the globe with a
+   clearer shadow: a soft cast shadow plus a tighter contact shadow. Normal pointing keeps the light one. */
+.glove:is([data-state='hover'], [data-state='pinch'], [data-state='click'], [data-state='grab']) .glove__img.is-active {
+  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.45)) drop-shadow(0 16px 24px rgba(0, 0, 0, 0.6));
+}
+.glove[data-state='hover'] .glove__img.is-active {
+  filter: drop-shadow(0 0 12px var(--glove-glow)) drop-shadow(0 4px 6px rgba(0, 0, 0, 0.45)) drop-shadow(0 16px 24px rgba(0, 0, 0, 0.6));
+}
 
-/* Effects around the hotspot: sparks and a click ripple. */
+/* Effect around the hotspot: the click ripple. */
 .glove__fx {
   position: absolute;
   left: 0;
@@ -79,17 +86,6 @@
   opacity: 0;
   transition: opacity 0.2s ease-out;
 }
-.glove[data-state='hover'] .fx--sparks,
-.glove[data-state='pinch'] .fx--sparks,
-.glove[data-state='grab'] .fx--sparks {
-  opacity: 1;
-  animation: spark 1.6s ease-in-out infinite;
-}
-/* Grab sparks sit above the knuckles rather than the fingertip. */
-.glove[data-state='grab'] .fx--sparks {
-  transform: translate(-10px, -18px);
-}
-
 .fx--ripple circle {
   stroke-width: 2;
   transform-origin: 0 0;
@@ -103,11 +99,6 @@
 }
 .glove__fx.is-click .fx--ripple circle + circle {
   animation-delay: 0.08s;
-}
-@keyframes spark {
-  50% {
-    opacity: 0.55;
-  }
 }
 
 @keyframes ripple {
