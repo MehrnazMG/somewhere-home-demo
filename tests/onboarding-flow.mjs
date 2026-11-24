@@ -74,6 +74,15 @@ function run(flow, from, to, input, step = 33) {
   assert.equal(s.celebrating, true);
 }
 
+// Visit: the pinch illustration reacts to a real pinch only.
+{
+  const f = new OnboardingFlow(); f._go('visit', 0);
+  let s = run(f, 0, 100, { present: true, cardVisible: true, pinch: .2 });
+  assert.equal(s.pinching, false); assert.equal(s.needsCard, false);
+  s = run(f, 133, 200, { present: true, cardVisible: true, pinch: .9 });
+  assert.equal(s.pinching, true);
+}
+
 // Visit → return → done → free.
 {
   const f = new OnboardingFlow(); f._go('visit', 0);

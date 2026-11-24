@@ -163,6 +163,7 @@ export class OnboardingFlow {
       lost: TEACHING_STEPS.includes(this.state) && !present && this.absentSince != null && now - this.absentSince >= this.o.lostAfter,
       present,
       gripping: present && input.mode === 'navigate',
+      pinching: present && (input.pinch || 0) > 0.5,
       needsCard: this.state === 'visit' && !input.cardVisible,
       canReturn: !!input.canReturn,
       step: TEACHING_STEPS.indexOf(this.state),

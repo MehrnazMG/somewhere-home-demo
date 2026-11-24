@@ -142,7 +142,7 @@ export function createGestureBridge(view) {
         } else if (cardHit&&onboarding.allows('enter')&&view.enterPreview()) {cursor.click(); }
         else if (focused&&onboarding.allows('enter')) { view.setHover(focused);if(view.enterPreview())cursor.click(); }
       }
-      onboarding.update(performance.now(),{present:true,x:f.pointer.x,y:f.pointer.y,mode:f.mode,pan:f.pan,...visitState()});
+      onboarding.update(performance.now(),{present:true,x:f.pointer.x,y:f.pointer.y,mode:f.mode,pan:f.pan,pinch:f.pinch,...visitState()});
       // Magnetic cursor: once a house is chosen the glove is pulled onto it and stays there
       // (focus is released only past CONFIG.focus.releaseFactor pick radii), so small hand tremor
       // or the finger movement of a pinch doesn't slip off the house.

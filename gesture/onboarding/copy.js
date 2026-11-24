@@ -19,10 +19,11 @@ export const COPY = {
     hints: ['Hold your hand over a glowing house', 'Turn the earth if no house is close, then hold over one'],
     success: 'Someone lives here',
   },
+  // Shown with the big pinch illustration the first time a visitor's hand rests on a home.
   visit: {
-    title: 'Pinch to visit',
-    needsCard: 'Touch a home again, then pinch',
-    hints: ['Pinch on the house or its card', 'Hold your hand still, then pinch quickly and let go'],
+    title: 'Pinch your fingers together, then let go to visit',
+    needsCard: 'Move your hand back onto a home',
+    hints: ['Keep your hand on the home and pinch quickly', 'Touch your thumb to your fingertips, then open your hand'],
   },
   done: 'You’re ready to explore',
   lost: 'Raise your hand so the camera can see it',

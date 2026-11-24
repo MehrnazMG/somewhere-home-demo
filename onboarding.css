@@ -27,7 +27,7 @@
 :root:has(body.onboarding-on){background:#302e40}
 body.onboarding-on #stage{transition:transform 1.8s cubic-bezier(.22,.8,.2,1)}
 body[data-onboarding=intro] #stage{transition:none;transform:translateY(54vh) scale(1.08)} /* start in place; only the rise animates */
-@media (prefers-reduced-motion:reduce){body.onboarding-on #stage{transition:none}.ob-palm,.ob-grip img{animation:none!important}}
+@media (prefers-reduced-motion:reduce){body.onboarding-on #stage{transition:none}.ob-palm,.ob-grip img,.ob-pinch img{animation:none!important}}
 
 /* ---------- 03 · Touch a home  /  04 · Pinch to visit ---------- */
 .ob-line{position:absolute;left:50%;bottom:6vh;transform:translate(-50%,8px);margin:0;white-space:nowrap;font:var(--headline);letter-spacing:-.4px;text-align:center;text-shadow:var(--ink-shadow);opacity:0;transition:opacity .35s ease,transform .35s ease;z-index:1}
@@ -51,6 +51,14 @@ body[data-onboarding=intro] #stage{transition:none;transform:translateY(54vh) sc
 .ob-grip-bar{width:min(200px,40vw);height:4px;border-radius:4px;background:#ffffff2e;overflow:hidden}
 .ob-grip-bar i{display:block;height:100%;background:linear-gradient(90deg,#c7d0ff,#fff);transform-origin:left;transform:scaleX(0);transition:transform .15s linear;box-shadow:0 0 10px #c7d0ff}
 
+/* First pinch: the big pinch hand (the only hand on screen) loops a pinch-and-release, and
+   closes in / glows while the visitor is really pinching. */
+.ob-pinch{position:absolute;left:50%;bottom:calc(6vh + 74px);transform:translate(-50%,16px);opacity:0;transition:opacity .3s ease,transform .3s ease;z-index:1}
+.show-pinch .ob-pinch{opacity:1;transform:translate(-50%,0);transition-delay:.15s}
+.ob-pinch img{display:block;width:clamp(120px,11vw,170px);height:auto;filter:drop-shadow(0 4px 6px #0007) drop-shadow(0 16px 24px #0009);animation:ob-pinch-demo 1.6s ease-in-out infinite;transition:transform .15s ease,filter .15s ease}
+.has-hand .ob-pinch img{animation-duration:2.2s}
+.is-pinching .ob-pinch img{animation:none;transform:scale(.84) rotate(-6deg);filter:drop-shadow(0 0 24px #c7d0ffee) drop-shadow(0 16px 24px #0009)}
+
 /* Target highlight: one house at a time, so the eye knows where to go. */
 .ob-target{position:absolute;left:0;top:0;transform:translate(var(--x),var(--y));opacity:0;transition:opacity .3s}
 .show-target .ob-target{opacity:1}
@@ -63,14 +71,9 @@ body[data-onboarding=intro] #stage{transition:none;transform:translateY(54vh) sc
 .ob-ghost-move{position:absolute;left:0;top:0}
 .ob-ghost img{position:absolute;left:0;top:0;height:var(--gh);width:auto;transform:translate(-58%,-60%);opacity:0;filter:drop-shadow(0 0 16px #b8c4ffcc) saturate(.8)}
 .ob-ghost img:is([data-g=normal],[data-g=hover],[data-g=click]){transform:translate(-50%,-57%)} /* palm hotspot */
-.ob-ghost-ripple{position:absolute;left:-26px;top:-26px;width:52px;height:52px;border-radius:50%;border:2px solid #fff;opacity:0}
 .ob-ghost[data-demo=touch] .ob-ghost-move{animation:ob-reach 3s cubic-bezier(.4,0,.2,1) infinite}
 .ob-ghost[data-demo=touch] img[data-g=normal]{animation:ob-g-travel 3s infinite}
 .ob-ghost[data-demo=touch] img[data-g=hover]{animation:ob-g-arrive 3s infinite}
-.ob-ghost[data-demo=visit] img[data-g=hover]{animation:ob-g-v-hover 2.8s infinite}
-.ob-ghost[data-demo=visit] img[data-g=pinch]{animation:ob-g-v-pinch 2.8s infinite}
-.ob-ghost[data-demo=visit] img[data-g=click]{animation:ob-g-v-click 2.8s infinite}
-.ob-ghost[data-demo=visit] .ob-ghost-ripple{animation:ob-ripple 2.8s infinite}
 
 /* Testing controls stay reachable but recede while a visitor is being taught. */
 body.onboarding-on .gesture-bar,body.onboarding-on .gesture-mode-bar{opacity:.28;transition:opacity .3s}
@@ -80,13 +83,10 @@ body:is([data-onboarding=intro],[data-onboarding=welcome]) :is(.gesture-bar,.ges
 @keyframes ob-palm-idle{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-6px) rotate(3deg)}}
 @keyframes ob-palm-wave{0%,100%{transform:rotate(-16deg)}50%{transform:rotate(16deg)}}
 @keyframes ob-grip-demo{0%,100%{transform:translateX(-40px) rotate(-5deg)}50%{transform:translateX(40px) rotate(5deg)}}
+@keyframes ob-pinch-demo{0%,45%,100%{transform:scale(1) rotate(0)}60%,72%{transform:scale(.86) rotate(-6deg)}}
 @keyframes ob-pulse{0%{transform:scale(.55);opacity:.95}100%{transform:scale(1.5);opacity:0}}
 @keyframes ob-reach{0%{transform:translate(var(--fx),var(--fy))}55%,100%{transform:translate(0,0)}}
 @keyframes ob-g-travel{0%,52%{opacity:1}56%,100%{opacity:0}}
 @keyframes ob-g-arrive{0%,52%{opacity:0}56%,90%{opacity:1}100%{opacity:0}}
-@keyframes ob-g-v-hover{0%,28%{opacity:1}30%,62%{opacity:0}64%,92%{opacity:1}100%{opacity:0}}
-@keyframes ob-g-v-pinch{0%,28%{opacity:0}30%,46%{opacity:1}48%,100%{opacity:0}}
-@keyframes ob-g-v-click{0%,46%{opacity:0}48%,62%{opacity:1}64%,100%{opacity:0}}
-@keyframes ob-ripple{0%,48%{opacity:0;transform:scale(.4)}50%{opacity:1;transform:scale(.4)}70%,100%{opacity:0;transform:scale(1.7)}}
 @keyframes ob-done-out{0%{opacity:0}12%,78%{opacity:1}100%{opacity:0}}
 @media (prefers-reduced-motion:reduce){.ob-ghost-move,.ob-target i{animation:none!important}}
