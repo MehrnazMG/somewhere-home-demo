@@ -64,6 +64,10 @@ The pinch-on and pinch-release thresholds are currently both **0.3**, measured a
 
 Switching schemes cancels any unfinished action. In a fresh pinch state, open the fingers before starting a new pinch. The browser remembers the selected scheme.
 
+### Publishing updates
+
+Before pushing changes to GitHub Pages, run `python3 tools/stamp-version.py`. It stamps each script and stylesheet with a fingerprint of its contents, so visitors' browsers fetch changed files immediately instead of using a cached copy for up to 10 minutes.
+
 ### Hand onboarding
 
 Every page load starts a short tutorial for the next visitor, following the team wireframe and Meta's hand-onboarding guidance:

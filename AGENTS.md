@@ -148,6 +148,8 @@ Reuse the existing scenes and icons. Ljubljana retains the original blue room; s
 
 The globe started from the team's visual study. IntentState, landmark helpers, camera pipeline and glove assets originated in the supplied reference gesture demo and were adapted here. Do not replace this app with that reference renderer/marker system.
 
+Before publishing, run `python3 tools/stamp-version.py`: it versions every script/stylesheet in `index.html` (and nested ES-module imports through the import map) by content hash, so GitHub Pages' 10-minute browser cache never serves stale code. Don't hand-edit the `?v=` stamps.
+
 For a future standalone/GitHub export, package the demo source plus assets/vendor and docs; exclude development screenshots and unrelated parent-project files. Keep the standalone `./` header link and portable `serve.py`; do not reintroduce dependencies on sibling project folders. Use relative runtime assets so a project subpath works. Publishing has its own task; do not invent repository or hosted links in documentation.
 
 ## Verification
