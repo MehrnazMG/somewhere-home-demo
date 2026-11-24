@@ -55,7 +55,7 @@ Camera -> HandTrackingSource -> IntentState -> bridge -> OrbitControls / home vi
 | `gesture/orbit-navigation.js` | Feed hand movement into the same bounded orbit used by mouse input. |
 | `gesture/onboarding/flow.js` | Onboarding state machine (no DOM): wave detection, step success rules, hint escalation, tracking-loss prompt and `allows()` gating. |
 | `gesture/onboarding/Onboarding.js`, `copy.js`, `chime.js`, `onboarding.css` | Onboarding overlay, editable copy, ghost-hand demos, target highlight and confirmation sounds. |
-| `gesture/ui/GloveCursor.js` | Illustrated cursor states and palm-aligned image hotspots. Normal/hover/click use the open palm (`assets/cursor/palm.png`, same art as the welcome palm); pinch and grab keep their gloves. No spark lines; active states get a stronger shadow. |
+| `gesture/ui/GloveCursor.js` | Illustrated cursor states and palm-aligned image hotspots. Normal/hover/click use the open palm (`assets/cursor/palm.png`, same art as the welcome palm); pinch and grab keep their gloves. The pinch glove is two layers (`pinch-hand.png` + `pinch-index.png`): the index finger rotates about its knuckle (pivot 102,34 of 238×220; 18° = touching the thumb), following the real pinch via `--close`, and looping a pinch (open → close → hold → open, 2.4 s) as the onboarding demo. `pinch.png` stays for the scheme-2 grab illustration. No spark lines; active states get a stronger shadow. |
 | `gesture/globe/geo.js` | Borrowed math helpers; currently used for cursor damping. |
 | `assets/` | Local map data, cursor PNGs and Figma room/icon assets. |
 | `tests/*.mjs` | Node checks with local fixtures; no real camera required. |

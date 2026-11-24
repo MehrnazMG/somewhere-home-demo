@@ -21,7 +21,9 @@ const STATES = {
   normal: { src: './assets/cursor/palm.png', w: 203, hotspot: [0.50, 0.57] },
   hover: { src: './assets/cursor/palm.png', w: 203, hotspot: [0.50, 0.57] },
   click: { src: './assets/cursor/palm.png', w: 203, hotspot: [0.50, 0.57] },
-  pinch: { src: './assets/cursor/pinch.png', w: 238, hotspot: [0.58, 0.60] },
+  // Pinch is two layers: the glove (pinch-hand) and its index finger (pinch-index), which rotates
+  // about the knuckle onto the thumb. Same 238×220 canvas as the original pinch.png.
+  pinch: { src: './assets/cursor/pinch-hand.png', finger: './assets/cursor/pinch-index.png', w: 238, hotspot: [0.58, 0.60] },
   grab: { src: './assets/cursor/grab.png', w: 206, hotspot: [0.58, 0.60] },
 };
 const IMAGE_H = 220;
@@ -41,7 +43,9 @@ export class GloveCursor {
     this.el.className = 'glove';
     this.el.innerHTML =
       Object.entries(STATES)
-        .map(([name, s]) => `<img class="glove__img" data-state="${name}" src="${s.src}" alt="" draggable="false">`)
+        .map(([name, s]) => s.finger
+          ? `<span class="glove__img glove__pinch" data-state="${name}"><img src="${s.src}" alt="" draggable="false"><img class="glove__finger" src="${s.finger}" alt="" draggable="false"></span>`
+          : `<img class="glove__img" data-state="${name}" src="${s.src}" alt="" draggable="false">`)
         .join('') + EFFECTS;
     parent.appendChild(this.el);
     this.imgs = Object.fromEntries([...this.el.querySelectorAll('.glove__img')].map((i) => [i.dataset.state, i]));
@@ -106,6 +110,9 @@ export class GloveCursor {
     // The demo animation plays until the visitor really pinches; then the glove holds still and glows.
     this.el.classList.toggle('is-demo-pinch', demo === 'pinch' && state === 'pinch' && pinch <= 0.5);
     this.el.classList.toggle('is-pinching', state === 'pinch' && pinch > 0.5);
+    // The glove's finger follows the visitor's real pinch: 0 = open, 1 = touching the thumb.
+    const close = Math.min(1, Math.max(0, (pinch - 0.25) / 0.55));
+    this.el.style.setProperty('--close', close.toFixed(3));
     // Each drawing stays at least a moment (click and grab always show at once).
     const now = performance.now();
     const instant = state === 'click' || state === 'grab'; // these must answer the moment you act

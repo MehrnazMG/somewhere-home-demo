@@ -68,21 +68,34 @@
   filter: drop-shadow(0 0 12px var(--glove-glow)) drop-shadow(0 4px 6px rgba(0, 0, 0, 0.45)) drop-shadow(0 16px 24px rgba(0, 0, 0, 0.6));
 }
 
-/* Onboarding: the pinch glove loops a pinch-and-release on the cursor until the visitor pinches;
-   a real pinch holds it closed with a glow. */
-.glove.is-demo-pinch .glove__img.is-active {
-  animation: glove-pinch-demo 1.6s ease-in-out infinite;
+/* Pinch glove: two layers. The index finger rotates about its knuckle onto the thumb
+   (pivot 102,34 on the 238×220 drawing; 18° closes it). It follows the visitor's real pinch
+   through --close (0–1), and during onboarding it loops a pinch like the reference animation:
+   open, close onto the thumb, hold, open. */
+.glove__pinch img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.glove__finger {
+  transform-origin: 42.86% 15.45%;
+  transform: rotate(calc(var(--close, 0) * -18deg));
+  transition: transform 0.06s linear;
+}
+.glove.is-demo-pinch .glove__finger {
+  animation: glove-finger-pinch 2.4s cubic-bezier(0.45, 0, 0.3, 1) infinite;
 }
 .glove.is-pinching .glove__img.is-active {
-  transform: scale(0.9);
   filter: drop-shadow(0 0 16px var(--glove-glow)) drop-shadow(0 4px 6px rgba(0, 0, 0, 0.45)) drop-shadow(0 16px 24px rgba(0, 0, 0, 0.6));
 }
-@keyframes glove-pinch-demo {
-  0%, 45%, 100% { transform: scale(1) rotate(0); }
-  60%, 72% { transform: scale(0.86) rotate(-6deg); }
+@keyframes glove-finger-pinch {
+  0%, 22% { transform: rotate(0deg); }
+  42%, 62% { transform: rotate(-18deg); }
+  82%, 100% { transform: rotate(0deg); }
 }
 @media (prefers-reduced-motion: reduce) {
-  .glove.is-demo-pinch .glove__img.is-active { animation: none; }
+  .glove.is-demo-pinch .glove__finger { animation: none; }
 }
 
 /* Effect around the hotspot: the click ripple. */
