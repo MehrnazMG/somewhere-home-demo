@@ -55,7 +55,7 @@ Camera -> HandTrackingSource -> IntentState -> bridge -> OrbitControls / home vi
 | `gesture/orbit-navigation.js` | Feed hand movement into the same bounded orbit used by mouse input. |
 | `gesture/onboarding/flow.js` | Onboarding state machine (no DOM): wave detection, step success rules, hint escalation, tracking-loss prompt and `allows()` gating. |
 | `gesture/onboarding/Onboarding.js`, `copy.js`, `chime.js`, `onboarding.css` | Onboarding overlay, editable copy, ghost-hand demos, target highlight and confirmation sounds. |
-| `gesture/ui/GloveCursor.js` | Illustrated cursor states and palm-aligned image hotspots. |
+| `gesture/ui/GloveCursor.js` | Illustrated cursor states and palm-aligned image hotspots. Normal/hover/click use the open palm (`assets/cursor/palm.png`, same art as the welcome palm); pinch and grab keep their gloves. No spark lines; active states get a stronger shadow. |
 | `gesture/globe/geo.js` | Borrowed math helpers; currently used for cursor damping. |
 | `assets/` | Local map data, cursor PNGs and Figma room/icon assets. |
 | `tests/*.mjs` | Node checks with local fixtures; no real camera required. |

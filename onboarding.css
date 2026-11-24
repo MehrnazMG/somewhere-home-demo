@@ -62,6 +62,7 @@ body[data-onboarding=intro] #stage{transition:none;transform:translateY(54vh) sc
 .ob-ghost:not([data-demo=""]){opacity:.78}
 .ob-ghost-move{position:absolute;left:0;top:0}
 .ob-ghost img{position:absolute;left:0;top:0;height:var(--gh);width:auto;transform:translate(-58%,-60%);opacity:0;filter:drop-shadow(0 0 16px #b8c4ffcc) saturate(.8)}
+.ob-ghost img:is([data-g=normal],[data-g=hover],[data-g=click]){transform:translate(-50%,-57%)} /* palm hotspot */
 .ob-ghost-ripple{position:absolute;left:-26px;top:-26px;width:52px;height:52px;border-radius:50%;border:2px solid #fff;opacity:0}
 .ob-ghost[data-demo=touch] .ob-ghost-move{animation:ob-reach 3s cubic-bezier(.4,0,.2,1) infinite}
 .ob-ghost[data-demo=touch] img[data-g=normal]{animation:ob-g-travel 3s infinite}

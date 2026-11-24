@@ -2,11 +2,13 @@ import { CONFIG } from '../config.js';
 import { damp } from '../globe/geo.js';
 
 /**
- * The illustrated glove cursor. Five drawings, one per state:
+ * The illustrated glove cursor, one drawing per state:
  *
- *   normal – pointing                     hover – pointing at something you can choose
- *   pinch  – thumb and index closing      click – the moment of choosing
+ *   normal – open palm (the same palm visitors see on the welcome screen)
+ *   hover  – open palm, lifted, over something you can choose
+ *   pinch  – thumb and index closing      click – open palm pressing in, the moment of choosing
  *   grab   – turning the world
+ * (The pointing-finger drawings were removed by design request, Nov 2026.)
  *
  * `hotspot` is the point of each drawing that sits exactly on the pointer
  * (as a fraction of the image), so the fingertip, or the gap between thumb
@@ -16,9 +18,9 @@ import { damp } from '../globe/geo.js';
  */
 // All active illustrations align around the palm, not different fingertips/knuckles.
 const STATES = {
-  normal: { src: './assets/cursor/normal.png', w: 208, hotspot: [0.58, 0.60] },
-  hover: { src: './assets/cursor/hover.png', w: 214, hotspot: [0.58, 0.60] },
-  click: { src: './assets/cursor/click.png', w: 204, hotspot: [0.58, 0.60] },
+  normal: { src: './assets/cursor/palm.png', w: 203, hotspot: [0.50, 0.57] },
+  hover: { src: './assets/cursor/palm.png', w: 203, hotspot: [0.50, 0.57] },
+  click: { src: './assets/cursor/palm.png', w: 203, hotspot: [0.50, 0.57] },
   pinch: { src: './assets/cursor/pinch.png', w: 238, hotspot: [0.58, 0.60] },
   grab: { src: './assets/cursor/grab.png', w: 206, hotspot: [0.58, 0.60] },
 };

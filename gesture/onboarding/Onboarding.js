@@ -5,6 +5,7 @@ import { createChime } from './chime.js';
 // Ghost gloves demonstrate a gesture only while no live hand is in view,
 // so the screen never shows two hands at once.
 const GLOVES = ['normal', 'hover', 'pinch', 'click'];
+const GLOVE_SRC = { normal: 'palm', hover: 'palm', click: 'palm', pinch: 'pinch' };
 
 /**
  * Overlay + controller for the hand onboarding. The globe is not touched here:
@@ -26,7 +27,7 @@ export function createOnboarding({ getScheme = () => 'fist', homes, projectHome,
     </section>
     <div class="ob-grip" aria-hidden="true"><img alt="" draggable="false"><span class="ob-grip-bar"><i></i></span></div>
     <div class="ob-target" aria-hidden="true"><i></i><i></i></div>
-    <div class="ob-ghost" aria-hidden="true"><div class="ob-ghost-move">${GLOVES.map((g) => `<img data-g="${g}" src="./assets/cursor/${g}.png" alt="" draggable="false">`).join('')}<span class="ob-ghost-ripple"></span></div></div>
+    <div class="ob-ghost" aria-hidden="true"><div class="ob-ghost-move">${GLOVES.map((g) => `<img data-g="${g}" src="./assets/cursor/${GLOVE_SRC[g]}.png" alt="" draggable="false">`).join('')}<span class="ob-ghost-ripple"></span></div></div>
     <p class="ob-line" role="status" aria-live="polite"></p>`;
   document.body.appendChild(root);
   document.body.classList.add('onboarding-on');
