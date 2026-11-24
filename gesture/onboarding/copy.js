@@ -21,9 +21,9 @@ export const COPY = {
   },
   // Shown with the big pinch illustration the first time a visitor's hand rests on a home.
   visit: {
-    title: 'Pinch your fingers together, then let go to visit',
+    title: 'Pinch your hand to click',
     needsCard: 'Move your hand back onto a home',
-    hints: ['Keep your hand on the home and pinch quickly', 'Touch your thumb to your fingertips, then open your hand'],
+    hints: ['Keep your hand on the home and pinch to click', 'Touch your thumb to your fingertips, then open your hand to click'],
   },
   done: 'You’re ready to explore',
   lost: 'Raise your hand so the camera can see it',
