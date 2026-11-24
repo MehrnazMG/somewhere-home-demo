@@ -148,7 +148,7 @@ export function createGestureBridge(view) {
       // or the finger movement of a pinch doesn't slip off the house.
       let cx=x, cy=y;
       if (focused) { const h=homePoint(focused), k=CONFIG.focus.magnet; cx=x+(h.x-x)*k; cy=y+(h.y-y)*k; }
-      cursor.update({visible:onboarding.showsCursor,x:cx,y:cy,mode:f.mode,locked:!!focused||cardHit||backHit,pinch:f.pinch,immediate:entering},dt);
+      cursor.update({visible:onboarding.showsCursor,x:cx,y:cy,mode:f.mode,locked:!!focused||cardHit||backHit,pinch:f.pinch,immediate:entering,demo:onboarding.cursorDemo},dt);
       status.textContent=hands.gestureMode==='pinch'
         ?f.mode==='navigate'?'Pinch held · move to turn':hands.pinchActions.phase==='pinch'?'Release to select · move to drag':instructions()
         :hands.clickGesture.phase==='pinch'?'Release to select':f.mode==='navigate'?'Holding the globe':focused?'Pinch and release to select':instructions();

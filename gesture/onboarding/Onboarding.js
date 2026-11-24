@@ -26,7 +26,6 @@ export function createOnboarding({ getScheme = () => 'fist', homes, projectHome,
       <button class="ob-operator" type="button" hidden></button>
     </section>
     <div class="ob-grip" aria-hidden="true"><img alt="" draggable="false"><span class="ob-grip-bar"><i></i></span></div>
-    <div class="ob-pinch" aria-hidden="true"><img src="./assets/cursor/pinch.png" alt="" draggable="false"></div>
     <div class="ob-target" aria-hidden="true"><i></i><i></i></div>
     <div class="ob-ghost" aria-hidden="true"><div class="ob-ghost-move">${GLOVES.map((g) => `<img data-g="${g}" src="./assets/cursor/${GLOVE_SRC[g]}.png" alt="" draggable="false">`).join('')}</div></div>
     <p class="ob-line" role="status" aria-live="polite"></p>`;
@@ -38,7 +37,7 @@ export function createOnboarding({ getScheme = () => 'fist', homes, projectHome,
   el.op.addEventListener('click', () => { chime.unlock(); startCamera(); });
   $('.ob-welcome').addEventListener('click', () => { chime.unlock(); if (cameraStatus() !== 'running') startCamera(); });
 
-  let target = null, lastState = '', bigPinch = false;
+  let target = null, lastState = '', pinchDemo = false;
   const set = (node, text) => { if (node.textContent !== text) node.textContent = text; };
   const place = (node, x, y) => { node.style.setProperty('--x', `${x}px`); node.style.setProperty('--y', `${y}px`); };
 
@@ -101,11 +100,9 @@ export function createOnboarding({ getScheme = () => 'fist', homes, projectHome,
     }
     root.classList.toggle('is-gripping', !!s.gripping);
 
-    // First hover on a home (visit step, card open): the big pinch hand is the only hand on
-    // screen, like the waving palm; it closes in and glows while the visitor actually pinches.
-    bigPinch = s.state === 'visit' && !s.needsCard && !s.celebrating;
-    root.classList.toggle('show-pinch', bigPinch);
-    root.classList.toggle('is-pinching', !!s.pinching);
+    // First hover on a home (visit step, card open): the live cursor becomes the pinch glove and
+    // loops a pinch, with the guide line below (GloveCursor draws it; see `cursorDemo`).
+    pinchDemo = s.state === 'visit' && !s.needsCard && !s.celebrating;
 
     // Demonstration ghost: only while no live hand is visible.
     let demo = '';
@@ -133,8 +130,10 @@ export function createOnboarding({ getScheme = () => 'fist', homes, projectHome,
   const api = {
     get state() { return flow.state; },
     get active() { return flow.active; },
-    /** On the title, wave, grab and first-pinch screens the illustration is the only hand. */
-    get showsCursor() { return !['intro', 'welcome', 'grab'].includes(flow.state) && !bigPinch; },
+    /** On the title, wave and grab screens the illustration is the only hand. */
+    get showsCursor() { return !['intro', 'welcome', 'grab'].includes(flow.state); },
+    /** 'pinch' while the cursor should demonstrate the pinch on a home, else null. */
+    get cursorDemo() { return pinchDemo ? 'pinch' : null; },
     allows: (what) => flow.allows(what),
     update(now, input) {
       if (!started && flow.state === 'intro') { started = true; flow.reset(now); }

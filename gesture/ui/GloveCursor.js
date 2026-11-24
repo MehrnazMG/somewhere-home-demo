@@ -78,9 +78,11 @@ export class GloveCursor {
     this.fx.classList.add('is-click');
   }
 
-  _pick({ mode, locked, pinch }) {
+  _pick({ mode, locked, pinch, demo }) {
     if (performance.now() < this.clickUntil) return 'click';
     if (mode === 'navigate') return 'grab';
+    // Teaching (onboarding): resting on a home shows the pinch glove itself, looping a pinch.
+    if (demo === 'pinch') return 'pinch';
     // Hysteresis: the pinch drawing appears when the fingers are well on their way
     // and stays until they have clearly opened again, so it can't flutter.
     const pinching = this.state === 'pinch' ? pinch > 0.35 : pinch > 0.65;
@@ -89,7 +91,7 @@ export class GloveCursor {
     return 'normal';
   }
 
-  update({ visible, x, y, mode, locked, pinch = 0, immediate }, dt) {
+  update({ visible, x, y, mode, locked, pinch = 0, immediate, demo = null }, dt) {
     if (immediate) {
       this.x = x;
       this.y = y;
@@ -100,7 +102,10 @@ export class GloveCursor {
     this.el.style.transform = `translate3d(${this.x}px, ${this.y}px, 0)`;
     this.el.classList.toggle('is-visible', !!visible);
 
-    let state = this._pick({ mode, locked, pinch });
+    let state = this._pick({ mode, locked, pinch, demo });
+    // The demo animation plays until the visitor really pinches; then the glove holds still and glows.
+    this.el.classList.toggle('is-demo-pinch', demo === 'pinch' && state === 'pinch' && pinch <= 0.5);
+    this.el.classList.toggle('is-pinching', state === 'pinch' && pinch > 0.5);
     // Each drawing stays at least a moment (click and grab always show at once).
     const now = performance.now();
     const instant = state === 'click' || state === 'grab'; // these must answer the moment you act
