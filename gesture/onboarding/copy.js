@@ -11,7 +11,7 @@ export const COPY = {
     fist: { title: 'Make a fist and grab to rotate the globe',
       hints: ['Close your hand into a fist and hold it for a moment', 'Keep the fist closed and move your hand slowly left or right'] },
     pinch: { title: 'Pinch and drag to rotate the globe',
-      hints: ['Pinch your fingertips together and keep them closed', 'Keep the pinch closed and move your hand slowly left or right'] },
+      hints: ['Pinch and keep it closed', 'Hold the pinch and move your hand slowly left or right'] },
     success: 'Well done',
   },
   touch: {
@@ -22,7 +22,7 @@ export const COPY = {
   visit: {
     title: 'Pinch to visit',
     needsCard: 'Touch a home again, then pinch',
-    hints: ['Pinch your fingers together on the house or its card', 'Keep your hand still, pinch quickly and let go'],
+    hints: ['Pinch on the house or its card', 'Hold your hand still, then pinch quickly and let go'],
   },
   done: 'You’re ready to explore',
   lost: 'Raise your hand so the camera can see it',
